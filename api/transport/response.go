@@ -68,3 +68,74 @@ type ResponseWriter interface {
 	// of Write().
 	SetApplicationError()
 }
+
+// ResponseHeaderWriter returns a ResponseHeaders struct that handlers and
+// inbound middleware may use to modify transport-level response headers.
+//
+// ResponseWriter implementations should implement this interface with the
+// intention of users attempting an upcast.
+type ResponseHeaderWriter interface {
+	ResponseHeaders() *ResponseHeaders
+}
+
+// ResponseHeaders acts as a proxy for modifying transport-level response
+// headers found on Response. This struct MUST be inspected by transports to map
+// to corresponding Response fields, after a handler is called.
+//
+// ResponseWriters should expose this struct using the ResponseHeaderWriter
+// interface.
+//
+// There should be one per request.
+type ResponseHeaders struct {
+	// these fields map to transport headers on transport.Response
+	id          string
+	host        string
+	environment string
+	service     string
+}
+
+// NewResponseHeaders creates a new ResponseHeaders for modifying
+// transport-level response headers.
+func NewResponseHeaders() *ResponseHeaders {
+	return &ResponseHeaders{}
+}
+
+// ID corresponds to the transport.Response field "ID".
+func (rh *ResponseHeaders) ID() string {
+	return rh.id
+}
+
+// SetID sets the transport.Response header for "ID".
+func (rh *ResponseHeaders) SetID(id string) {
+	rh.id = id
+}
+
+// Host corresponds to the transport.Response field "Host".
+func (rh *ResponseHeaders) Host() string {
+	return rh.host
+}
+
+// SetHost sets the transport.Response header for "Host".
+func (rh *ResponseHeaders) SetHost(host string) {
+	rh.host = host
+}
+
+// Environment corresponds to the transport.Response field "Environment".
+func (rh *ResponseHeaders) Environment() string {
+	return rh.environment
+}
+
+// SetEnvironment sets the transport.Response header for "Environment".
+func (rh *ResponseHeaders) SetEnvironment(environment string) {
+	rh.environment = environment
+}
+
+// Service corresponds to the transport.Response field "Service".
+func (rh *ResponseHeaders) Service() string {
+	return rh.service
+}
+
+// SetService sets the transport.Response header for "Service".
+func (rh *ResponseHeaders) SetService(service string) {
+	rh.service = service
+}
